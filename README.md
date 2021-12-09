@@ -5,5 +5,8 @@
 $ git clone git@github.com:nuolmakara16/fullstack-docker.git
 
 # Run project
-$ docker-compose up -d
+$ sudo docker-compose up -d
+
+# Stop project
+$ sudo docker-compose down
 ```
