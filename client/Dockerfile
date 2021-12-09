@@ -1,32 +1,19 @@
-FROM node:lts as builder
+FROM node:12.16.3-alpine3.9
 
-WORKDIR /app
-COPY package.json .
+RUN mkdir -p /var/www/dockerize-nuxt/nuxt-app
+WORKDIR /var/www/dockerize-nuxt/nuxt-app
 
-RUN yarn install \
-  --prefer-offline \
-  --frozen-lockfile \
-  --non-interactive \
-  --production=false
+COPY package*.json ./
+RUN npm install
 
 COPY . .
-RUN yarn build
 
-RUN rm -rf node_modules && \
-  NODE_ENV=production yarn install \
-  --prefer-offline \
-  --pure-lockfile \
-  --non-interactive \
-  --production=true
+RUN npm run build
 
+EXPOSE 4000
 
+ENV NUXT_HOST=0.0.0.0
 
-FROM node:lts
+ENV NUXT_PORT=4000
 
-WORKDIR /app
-
-COPY --from=builder /app  .
-
-ENV HOST 0.0.0.0
-
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]
