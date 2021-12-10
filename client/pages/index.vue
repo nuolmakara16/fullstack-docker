@@ -1,77 +1,78 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
+  <v-app>
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <h1>{{ backend.data }}</h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols='12' md='12'>
+          <v-row>
+            <v-col
+              v-for="(post, index) in posts"
+              :key="index"
+              cols='12'
+              md='4'
+              lg='3'
+              style='cursor: pointer'
             >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+              <v-hover v-slot="{ hover }">
+                <v-card
+                  class='mb-4 px-2 py-2 rounded-xl'
+                  :elevation="hover ? 10 : 0"
+                >
+                  <v-img
+                    :src="`https://picsum.photos/500/500?random=${index}`"
+                    max-height='250'
+                    aspect-ratio='1.4'
+                  ></v-img>
+                  <v-card-title>
+                    {{ post.title.substring(0, 50) }}
+                  </v-card-title>
+                  <v-card-text>
+                    {{ post.body.substring(0, 200) }}
+                  </v-card-text>
+                </v-card>
+              </v-hover>
+            </v-col>
+          </v-row>
+
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-app>
 </template>
+<script>
+
+export default {
+  data() {
+    return {
+      posts: [],
+      backend: '',
+      items: [
+        { title: 'Article',  category: [{ name:'Trip', url:'/trip' }, { name:'Camping', url: '/article' }] },
+      ]
+    }
+  },
+  mounted() {
+    this.fetch()
+    this.fetchBackend()
+  },
+  methods: {
+    async fetch() {
+      const res = await this.$axios.get('https://gorest.co.in/public/v1/posts')
+      this.posts = res.data.data
+    },
+    async fetchBackend() {
+      this.backend = await this.$axios.get('http://localhost/backend')
+    }
+  }
+}
+</script>
+
+<style>
+.white-border {
+  border: 1px solid white !important;
+}
+</style>

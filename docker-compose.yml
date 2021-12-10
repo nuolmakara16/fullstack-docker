@@ -1,35 +1,27 @@
-version: '3.9'
+version: '3'
+
 services:
   nginx:
     build: ./nginx
     ports:
       - '80:80'
-    depends_on:
-      - frontend
+    networks:
+      - my-network
+
   frontend:
     build: ./client
     container_name: frontend
-    ports:
-      - "3000:3000"
+    depends_on:
+      - backend
     command: 'npm run start'
+    networks:
+      - my-network
 
-  server:
+  backend:
     build: ./server
     container_name: backend
-    depends_on:
-      - db
-  db:
-    image: mysql
-    restart: always
-    environment:
-      - MYSQL_DATABASE=backend_db
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_USER=backend_user
-      - MYSQL_PASSWORD=secret
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - "8080:80"
-    environment:
-      - PMA_ARBITRARY=1
+    networks:
+      - my-network
+
+networks:
+  my-network:

@@ -1,5 +1,2 @@
-node_modules
-npm-debug*
-Dockerfile
-.git
-./package-lock.json
+**/node_modules
+.nuxt
